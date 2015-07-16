@@ -35,7 +35,7 @@ function spawn_planet() {
 function Start() {
 
     spawn_planet_at(0, 0, 0);
-    spawn_planet_at(3, 8, 0);
+    spawn_planet_at(6, 9, 0);
 
     for (var i = 0; i < 100; i++)
         spawn_planet();

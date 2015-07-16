@@ -1,13 +1,15 @@
 ﻿#pragma strict
 
-private var power : float = 4000.0;
-private var initial_velocity : float = 12.0;
+private var power : float = 500.0;
+private var initial_velocity : float = 4.0;
 public var ship_item_prefab : GameObject;
 public var score : int = 1;
+public var text_score : UnityEngine.UI.Text;
 
 function Start () {
     GetComponent.<Rigidbody2D>().velocity =
         transform.up * initial_velocity;
+    text_score.text = score.ToString();
 }
 
 function find_closest_planet() {
@@ -39,8 +41,10 @@ function Update () {
     transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
     var planet_id = find_closest_planet();
-    if (planet_id > score)
+    if (planet_id > score) {
         score = planet_id;
+        text_score.text = score.ToString();
+    }
 }
 
 function OnCollisionEnter2D(collision : Collision2D) {
@@ -54,5 +58,5 @@ function OnCollisionEnter2D(collision : Collision2D) {
             GetComponent.<Rigidbody2D>().velocity * 1.5;
         prefab.tag = "items";
     }
-    gameObject.active = false;
+    gameObject.SetActive(false);
 }

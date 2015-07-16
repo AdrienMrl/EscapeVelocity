@@ -1,7 +1,7 @@
 ﻿#pragma strict
 
 private var SpaceShip : GameObject;
-private var mass : float = 700;
+private var mass : float = 50;
 private var gravity : float;
 private var radius : float;
 public  var id : int;
@@ -53,7 +53,9 @@ function applyGravityToObject(object : GameObject) {
 
     var obj_dist_from_center : float =
         Vector2.Distance(transform.position, object.transform.position);
-    var multiplier : float = radius / obj_dist_from_center;
+    var multiplier : float = (radius * 2f) / obj_dist_from_center;
+    if (multiplier > 1)
+        multiplier = 1;
     multiplier = Mathf.Pow(multiplier, 3);
     object.GetComponent.<Rigidbody2D>().AddForce(
             (transform.position - object.transform.position)
