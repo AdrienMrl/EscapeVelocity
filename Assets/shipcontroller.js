@@ -1,10 +1,12 @@
 ﻿#pragma strict
 
-private var power : float = 500.0;
+private var power : float = 800.0;
 private var initial_velocity : float = 4.0;
 public var ship_item_prefab : GameObject;
 public var score : int = 1;
 public var text_score : UnityEngine.UI.Text;
+public var isAlive : boolean = true;
+public var Highscore : highscore;
 
 function Start () {
     GetComponent.<Rigidbody2D>().velocity =
@@ -31,9 +33,13 @@ function find_closest_planet() {
 
 function Update () {
 
-    if (Input.GetKey("space") || Input.touchCount > 0)
+    var particles = transform.GetChild(0).GetComponent.<ParticleSystem>();
+    if (Input.GetKey("space") || Input.touchCount > 0) {
         GetComponent.<Rigidbody2D>()
             .AddForce(transform.up * Time.deltaTime * power);
+            particles.enableEmission = true;
+    } else if (particles.isPlaying)
+        particles.enableEmission = false;
 
     var dir : Vector2 = transform.GetComponent.<Rigidbody2D>().velocity;
     var angle : float = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -45,6 +51,10 @@ function Update () {
         score = planet_id;
         text_score.text = score.ToString();
     }
+}
+
+function saveScore() {
+    Highscore.saveHighScore(score);
 }
 
 function OnCollisionEnter2D(collision : Collision2D) {
@@ -59,4 +69,6 @@ function OnCollisionEnter2D(collision : Collision2D) {
         prefab.tag = "items";
     }
     gameObject.SetActive(false);
+    isAlive = false;
+    saveScore();
 }

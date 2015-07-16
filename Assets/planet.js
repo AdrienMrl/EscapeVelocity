@@ -1,7 +1,7 @@
 ﻿#pragma strict
 
 private var SpaceShip : GameObject;
-private var mass : float = 50;
+private var mass : float = 80;
 private var gravity : float;
 private var radius : float;
 public  var id : int;
