@@ -4,6 +4,7 @@ private var SpaceShip : GameObject;
 private var mass : float = 700;
 private var gravity : float;
 private var radius : float;
+public  var id : int;
 
 function Start () {
 
@@ -18,6 +19,8 @@ function Start () {
 
     // randomly choose a size
     transform.localScale *= Random.Range(50, 150) / 100f;
+
+    tag = "planet";
 }
 
 function hsv_to_rgb(h : float, s : float, v : float) {

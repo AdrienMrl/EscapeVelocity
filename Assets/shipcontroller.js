@@ -3,10 +3,28 @@
 private var power : float = 4000.0;
 private var initial_velocity : float = 12.0;
 public var ship_item_prefab : GameObject;
+public var score : int = 1;
 
 function Start () {
     GetComponent.<Rigidbody2D>().velocity =
         transform.up * initial_velocity;
+}
+
+function find_closest_planet() {
+    var planets = GameObject.FindGameObjectsWithTag("planet");
+
+    var distance_min = -1;
+    var id = -1;
+
+    for (var p : GameObject in planets) {
+        var distance = Vector3.Distance(p.transform.position,
+                transform.position);
+        if (distance < distance_min || distance_min < 0) {
+            distance_min = distance;
+            id = p.GetComponent.<planet>().id;
+        }
+    }
+    return id;
 }
 
 function Update () {
@@ -16,9 +34,13 @@ function Update () {
             .AddForce(transform.up * Time.deltaTime * power);
 
     var dir : Vector2 = transform.GetComponent.<Rigidbody2D>().velocity;
-       var   angle : float = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-       angle -= 90;
-          transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    var angle : float = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+    angle -= 90;
+    transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+    var planet_id = find_closest_planet();
+    if (planet_id > score)
+        score = planet_id;
 }
 
 function OnCollisionEnter2D(collision : Collision2D) {

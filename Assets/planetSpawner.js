@@ -3,6 +3,7 @@
 public var planet_prefab : GameObject;
 private var planet_current : GameObject;
 private var planet_prev : GameObject;
+private var count : int = 1;
 
 function spawn_planet_at(x : int, y : int, z : int) {
     spawn_planet_at(Vector3(x, y, z));
@@ -14,6 +15,7 @@ function spawn_planet_at(position : Vector3) {
 
     planet_current = Instantiate(planet_prefab);
     planet_current.transform.position = position;
+    planet_current.GetComponent.<planet>().id = count++;
 }
 
 function spawn_planet() {
