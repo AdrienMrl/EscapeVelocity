@@ -9,5 +9,5 @@ function Start () {
 function Update () {
     if ((Input.touchCount > 0 || Input.GetKey("space")) &&
             !player.GetComponent.<shipcontroller>().isAlive)
-        Application.LoadLevel(Application.loadedLevel);
+; //        Application.LoadLevel(Application.loadedLevel);
 }

@@ -1,12 +1,14 @@
 ﻿#pragma strict
 
-private var power : float = 800.0;
-private var initial_velocity : float = 4.0;
+private var power : float = 700.0;
+private var initial_velocity : float = 5.0;
 public var ship_item_prefab : GameObject;
 public var score : int = 1;
 public var text_score : UnityEngine.UI.Text;
 public var isAlive : boolean = true;
 public var Highscore : highscore;
+public var PlayAgain : GameObject;
+private var close_planet : GameObject;
 
 function Start () {
     GetComponent.<Rigidbody2D>().velocity =
@@ -19,6 +21,7 @@ function find_closest_planet() {
 
     var distance_min = -1;
     var id = -1;
+    var planet : GameObject;
 
     for (var p : GameObject in planets) {
         var distance = Vector3.Distance(p.transform.position,
@@ -26,8 +29,21 @@ function find_closest_planet() {
         if (distance < distance_min || distance_min < 0) {
             distance_min = distance;
             id = p.GetComponent.<planet>().id;
+            planet = p;
         }
     }
+
+    if (close_planet != planet && close_planet != null)
+        close_planet.GetComponent.<planet>().done = true;
+    close_planet = planet;
+    var max = 4;
+    if (distance_min > 14 && 
+            GetComponent.<Rigidbody2D>().velocity.magnitude > max) {
+        power = 20;
+        GetComponent.<Rigidbody2D>().velocity *= 0.97;
+    } else
+        power = 800;
+
     return id;
 }
 
@@ -61,7 +77,7 @@ function OnCollisionEnter2D(collision : Collision2D) {
     if (collision.gameObject.tag == "items")
         return;
 
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 30; i++) {
         var prefab : GameObject = Instantiate(ship_item_prefab);
         prefab.transform.position = transform.position;
         prefab.GetComponent.<Rigidbody2D>().velocity =
@@ -71,4 +87,5 @@ function OnCollisionEnter2D(collision : Collision2D) {
     gameObject.SetActive(false);
     isAlive = false;
     saveScore();
+    PlayAgain.SetActive(true);
 }

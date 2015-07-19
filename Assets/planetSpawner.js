@@ -23,7 +23,7 @@ function spawn_planet() {
 
     var direction : Vector3 = planet_current.transform.position -
         planet_prev.transform.position;
-    direction = Quaternion.Euler(0, 0, Random.Range(-20, 20)) * direction;
+    direction = Quaternion.Euler(0, 0, Random.Range(-30, 30)) * direction;
     direction *= Random.Range(80, 120) / 100f;
     var spawn_position = planet_current.transform.position + direction;
 
@@ -33,9 +33,9 @@ function spawn_planet() {
     var planet_radius =
         planet_current.GetComponent.<Renderer>().bounds.extents.x;
 
-    if (distance < planet_radius * 9)
+    if (distance < planet_radius * 12)
         spawn_position = planet_current.transform.position + direction * 1.2;
-    else if (distance > planet_radius * 15)
+    else if (distance > planet_radius * 17)
         spawn_position = planet_current.transform.position + direction * 0.8;
 
     spawn_planet_at(spawn_position);
@@ -44,7 +44,7 @@ function spawn_planet() {
 function Start() {
 
     spawn_planet_at(0, 0, 0);
-    spawn_planet_at(6, 9, 0);
+    spawn_planet_at(7, 10, 0);
 
     for (var i = 0; i < 5; i++)
         spawn_planet();

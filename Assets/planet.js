@@ -1,26 +1,71 @@
 ﻿#pragma strict
 
 private var SpaceShip : GameObject;
-private var mass : float = 80;
+private var mass : float = 200;
 private var gravity : float;
 private var radius : float;
+public var asteroid_prefab : GameObject;
+private var asteroid : GameObject;
 public  var id : int;
+private var planet_color : Color;
+public var done : boolean = false;
+private var time : float = 0;
 
 function Start () {
 
+    done = false;
+
     SpaceShip = GameObject.FindGameObjectWithTag("Player");
+    transform.GetChild(0).GetComponent
+        .<ParticleSystem>().enableEmission = false;
 
     // setup physics
     radius = gameObject.GetComponent.<Renderer>().bounds.extents.x;
     gravity = radius * mass;
 
     // randomly choose a color
-    GetComponent.<SpriteRenderer>().color = getRandomColor();
+    planet_color = getRandomColor();
+    GetComponent.<SpriteRenderer>().color = planet_color;
+    planet_color = Color.white;
 
-    // randomly choose a size
-    transform.localScale *= Random.Range(50, 150) / 100f;
 
-    tag = "planet";
+    if (tag == "asteroid")
+        gravity = 0;
+
+    if (tag != "asteroid") {
+        tag = "planet";
+        // randomly choose a size
+        transform.localScale *= Random.Range(50, 150) / 100f;
+
+        if (id >= 10 && !Random.Range(0, 5))
+            spawnAsteroid();
+    }
+
+}
+
+function spawnAsteroid() {
+    asteroid = Instantiate(asteroid_prefab);
+
+    asteroid.GetComponent.<Rigidbody2D>().mass = 30;
+    var scale = Random.Range(5, 10) / 100f;
+    asteroid.transform.localScale.x = scale;
+    asteroid.transform.localScale.y = scale;
+    asteroid.transform.position = transform.position;
+
+    if (Random.Range(0, 2)) {
+        asteroid.transform.position.x += radius * Random.Range(11, 30) / 10;
+    } else {
+        asteroid.transform.position.x -= radius * Random.Range(11, 30) / 10;
+    }
+
+    if (Random.Range(0, 2)) {
+        asteroid.GetComponent.<Rigidbody2D>().velocity = Vector3.down;
+    } else {
+        asteroid.GetComponent.<Rigidbody2D>().velocity = Vector3.up;
+    }
+
+
+    asteroid.tag = "asteroid";
 }
 
 function hsv_to_rgb(h : float, s : float, v : float) {
@@ -62,6 +107,22 @@ function applyGravityToObject(object : GameObject) {
             * Time.deltaTime * gravity * multiplier);
 }
 
+function validate() {
+
+
+    if (planet_color == Color.white)
+        planet_color = GetComponent.<Renderer>().material.color;
+
+    GetComponent.<Renderer>().material.color =
+        Color.Lerp(planet_color, planet_color * 1.1, time * 10);
+
+    time += Time.deltaTime;
+
+    transform.GetChild(0).GetComponent.<ParticleSystem>().enableEmission = true;
+    if (time >= 0.1)
+    transform.GetChild(0).GetComponent.<ParticleSystem>().enableEmission = false;
+}
+
 function Update () {
 
     applyGravityToObject(SpaceShip);
@@ -70,4 +131,9 @@ function Update () {
     shipItems = GameObject.FindGameObjectsWithTag("items");
     for (var obj : GameObject in shipItems)
         applyGravityToObject(obj);
+    if (asteroid != null)
+        applyGravityToObject(asteroid);
+ 
+    if (done)
+        validate();
 }
